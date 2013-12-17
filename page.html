@@ -1,0 +1,33 @@
+﻿<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>page</title>
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+    <script type="text/javascript" src="js/jquery.aming.ajaxloadpage.js"></script>
+
+</head>
+<body>
+    <div class="content">
+    <div id="aming_scrolltop"></div>
+
+page
+    <a href="index.html">index.html</a>
+
+    </div>
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $('html').aming_ajaxloadpage({
+                target:'.content',
+                loads:function(){
+                    $('#loading').show();
+                },
+                loaded:function(){
+                    $('#loading').hide();
+                }
+            });
+        });
+    </script>
+</body>
+</html>
