@@ -1,0 +1,4 @@
+aming.ajaxloadpage
+==================
+
+ajaxloadpage
