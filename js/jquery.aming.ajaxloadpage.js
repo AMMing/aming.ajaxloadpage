@@ -9,6 +9,7 @@
  * @create date 2013-12-17
  * @update date 2013-12-19
  * Copyright (c) 2013-2013 AMing
+ * @github https://github.com/AMMing/aming.ajaxloadpage/
  * @example
  *     $('.content').aming_ajaxloadpage({
  *          target:'.content',
