@@ -4,27 +4,32 @@
  * @fileOverview html5无刷新加载页面
  * @author 阿命
  * @email y2443@163.com
- * @site wwww.y2443.com
+ * @site wwww.y2443.com , wwww.moepet.net
  * @version 1.0.0.3
- * @date 2013-12-17
+ * @create date 2013-12-17
+ * @update date 2013-12-19
  * Copyright (c) 2013-2013 AMing
  * @example
- *     $('html').aming_ajaxloadpage({
+ *     $('.content').aming_ajaxloadpage({
  *          target:'.content',
  *          loads:function(){
  *              $('#loading').show();
  *          },
  *          loaded:function(){
  *              $('#loading').hide();
- *          }*
+ *          }
  *      });
+ * 
+ *
+ *
+ *@refer http://www.clanfei.com/2012/09/1646.html
  */
 
 (function(window, document, $, undefined) {
     $.extend($.fn, {
         version: '1.0.0.3',
-        aming_ajaxloadpage_ajax: null,
         aming_ajaxloadpage: function(setting) { //默认值
+            //检测浏览器是否支持history和history.pushState
             if (!(window.history && history.pushState)) {
                 return this;
             }
