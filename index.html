@@ -15,12 +15,16 @@
 
 index
     <a href="page.html">page.html</a>
+    <a href="page.html" data-isajax='false'>page.html</a>
+    <a href="javascript:void(0)">page.html</a>
 
     </div>
     <script type="text/javascript">
+    var ajax=null;
         $(document).ready(function() {
-            $('html').aming_ajaxloadpage({
+            ajax=  $('html').aming_ajaxloadpage({
                 target:'.content',
+                enable_javascript:false,
                 loads:function(){
                     $('#loading').show();
                 },

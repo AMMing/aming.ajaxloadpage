@@ -5,7 +5,7 @@
  * @author 阿命
  * @email y2443@163.com
  * @site wwww.y2443.com
- * @version 1.0.0.0
+ * @version 1.0.0.3
  * @date 2013-12-17
  * Copyright (c) 2013-2013 AMing
  * @example
@@ -22,7 +22,7 @@
 
 (function(window, document, $, undefined) {
     $.extend($.fn, {
-        version: '1.0.0.0',
+        version: '1.0.0.3',
         aming_ajaxloadpage_ajax: null,
         aming_ajaxloadpage: function(setting) { //默认值
             if (!(window.history && history.pushState)) {
@@ -31,6 +31,7 @@
 
             var sdata = $.extend({
                 target: 'div',
+                enable_javascript: true,
                 loads: function(obj) {},
                 loaded: function(obj) {}
             }, setting);
@@ -41,15 +42,27 @@
             var thisobj = {
                 title: null,
                 url: null,
+                oldurl: null,
                 loadpage: function(url) {
+                    thisobj.oldurl = thisobj.url;
                     thisobj.url = url;
                     sdata.loads(thisobj);
                     ajax = $.ajax({
                         url: url,
+                        dataType: 'html',
+                        cache: false,
                         // type: 'GET',
                         success: function(data) {
                             data = '<div>' + data + '</div>'
+                            if (sdata.enable_javascript) {
+                                data = data.replace(new RegExp("<script", "g"), "<temp_script_temp");
+                                data = data.replace(new RegExp("</script>", "g"), "</temp_script_temp>");
+                            }
                             var html = $(data).find(sdata.target).html();
+                            if (sdata.enable_javascript) {
+                                html = html.replace(new RegExp("<temp_script_temp", "g"), "<script");
+                                html = html.replace(new RegExp("</temp_script_temp>", "g"), "</script>");
+                            }
                             thisobj.title = data.substr(data.indexOf('<title>') + 7);
                             thisobj.title = thisobj.title.substr(0, thisobj.title.indexOf('</title>'));
                             var state = {
@@ -60,28 +73,39 @@
                             history.pushState(state, thisobj.title, thisobj.url);
                             document.title = thisobj.title;
                             $(sdata.target).html(html);
-                            $(obj).aming_ajaxloadpage(sdata);
+                            // $(obj).aming_ajaxloadpage(sdata);
+                            thisobj.bindEvent();
+
                             sdata.loaded(thisobj);
                         }
                     });
+                },
+                bindEvent: function() {
+                    $(obj).find('a').bind('click', function() {
+                        var isajax = $(this).data('isajax');
+                        var url = $(this).attr('href');
+                        if (isajax == false || url.indexOf('javascript:') >= 0) {
+                            return true;
+                        }
+                        if (ajax == null) {
+                            currentState = {
+                                url: document.location.href,
+                                title: document.title,
+                                html: $(sdata.target).html()
+                            };
+                        } else {
+                            ajax.abort();
+                        }
+                        thisobj.loadpage(url);
+
+                        return false;
+                    });
                 }
             };
+            obj.ajaxdata = thisobj;
+            thisobj.url = document.location.href;
 
-            $(obj).find('a').bind('click', function() {
-                var url = $(this).attr('href');
-                if (ajax == null) {
-                    currentState = {
-                        url: document.location.href,
-                        title: document.title,
-                        html: $(sdata.target).html()
-                    };
-                } else {
-                    ajax.abort();
-                }
-                thisobj.loadpage(url);
-
-                return false;
-            });
+            thisobj.bindEvent();
 
             window.onpopstate = function(event) {
                 if (ajax == null) {
